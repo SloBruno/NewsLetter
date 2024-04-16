@@ -1,13 +1,19 @@
 function search() {
     const enviar = document.querySelector("#enviar");
 
+    fetchNoticias('Brasil');
+
     enviar.addEventListener('click', e => {
         e.preventDefault();
         let input = document.querySelector("input[name='input']").value;
 
         if (typeof input === "string" && input.length > 0 && input.length <= 50) {
             fetchNoticias(input);
-        };
+            return;
+        }
+        else{
+            fetchNoticias('Brasil');
+        }
     });
 
 };
@@ -16,19 +22,26 @@ function search() {
 
 function fetchNoticias(input) {
 
-    const url = ` https://newsapi.org/v2/everything?q=${input}&sortBy=relevancy&country=br&apiKey=cb4de11768594ca7a7cb0fba868e1a11`;
+    const container = document.querySelector('.container');
+
+    container.innerHTML = '';
+
+    let url = ` https://newsapi.org/v2/everything?q=${input}&sortBy=relevancy&apiKey=86273464b81041c38d232bdf1f10de6e`;
 
     fetch(url)
         .then(response => response.json())
         .then(data => {
-        let noticias = data.articles;
-        for(let i = 0; i < 50; i++){
-            addNews(i, noticias);
-    };
-    })
-        .catch(error => {
+            
+            let noticias = data.articles.filter(news => news.title != "[Removed]");
+            console.log(noticias);
+
+            for(let i = 0; i < 50; i++){
+                addNews(i, noticias);
+            };
+     })
+    .catch(error => {
         console.error('Erro ao buscar dados:', error);
-        });
+    });
     
 };
 
